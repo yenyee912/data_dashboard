@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+
+#app {
+  font-family: 'Futura', sans-serif;
+  /* color: #7fd3a1; */
+  color: #28273d;
+  /* margin-top: 30px; */
+}
+
+/* header style */
+.navbar {
+  padding: 0px auto;
+  margin: 0px auto;
+  background-color: #b64902;
+  font-size: 20px;
+
+}
+
+.logo-image {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+}
+
+.navbar-nav {
+  font-size: 18px;
+}
+
+/* footer style */
+
+#footer-bg {
+  background-color: #f5b759;
+  margin-top: 80px;
+  padding: 50px;
+}
+
+.footer-container {
+  width: 100%;
+  padding-top: 80px;
+  padding-bottom: 30px;
+  padding-left: 15px;
+  /* margin-top: 100px; */
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.bd-footer a {
+  font-weight: 500;
+  color: #495057;
+}
