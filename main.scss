@@ -1,0 +1,55 @@
+$border-radius: 0;
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
+@import './src/assets/variables.scss';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/src/index.scss';
+
+#app {
+  font-family: $font-family-base;
+}
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+main{
+  flex:1;
+  margin-top: 5vh;
+}
+
+/* header style */
+.navbar-bg {
+  padding: 0px auto;
+  margin: 0px auto;
+  background-color: $footer-bg;
+  font-size: 20px;
+
+}
+
+.logo-image {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+}
+
+/* footer style */
+
+#footer-bg {
+  background-color: map-get($theme-colors, 'primary');
+  margin-top: 80px;
+  padding: 50px;
+}
+
+.bd-footer a {
+  color: #495057;
+}
+
+// home
+body .b-jumbotron {
+  border-radius: 0 !important;
+}

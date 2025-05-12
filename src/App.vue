@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="d-flex flex-column min-vh-100">
     <header-pane></header-pane>
     <!-- <div class="text-center">
       <h3 class="m-2" style="color:red;">This is a development website. Please dont save your important / production

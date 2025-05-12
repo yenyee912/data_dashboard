@@ -1,26 +1,25 @@
 <template>
   <header>
-    <b-navbar sticky toggleable class="navbar navbar-expand-md navbar-dark font-weight-bold">
+    <b-navbar sticky toggleable class="navbar-bg navbar-expand-md navbar-dark">
       <!-- if login will see dashboard as landing page -->
       <b-navbar-brand :to="loggedIn ? '/home' : '/dashboard'">
         <div class="logo-image">
-          <img src="/assets/dash_48.png" class="img-fluid" />
+          <img src="/assets/placeholder.png" class="img-fluid" />
         </div>
       </b-navbar-brand>
 
       <!-- for phone, use to toggle the rest nav, and also left aligned items-->
       <b-navbar-toggle target="navbar-toggle-collapse">
-        <template :default="{ expanded }">
+        <!-- <template :default="{ expanded }">
           <b-icon v-if="expanded" icon="chevron-bar-up"></b-icon>
           <b-icon v-else icon="chevron-bar-down"></b-icon>
-        </template>
+        </template> -->
       </b-navbar-toggle>
 
       <b-collapse id="navbar-toggle-collapse" is-nav>
         <!-- ml-auto: align right-->
         <b-navbar-nav class="ml-auto" v-if="!loggedIn">
           <b-nav-item to="/homepage">Home</b-nav-item>
-          <b-nav-item to="/about">About Us</b-nav-item>
           <b-nav-item textto="/login">Login</b-nav-item>
         </b-navbar-nav>
 

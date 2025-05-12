@@ -13,7 +13,7 @@ import Vuelidate from 'vuelidate'
 // import VueQrcodeReader from 'vue-qrcode-reader'
 
 // Global Styles
-import '../main.css'
+import '../main.scss'
 
 // Axios
 import axios from 'axios'

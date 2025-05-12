@@ -12,16 +12,13 @@
               <b-link to="/home">Home</b-link>
             </li>
             <li>
-              <b-link to="/about">About</b-link>
+              <b-link to="/about">About Us</b-link>
             </li>
             <li>
-              <b-link to="/harvest/transplant/new">New Harvest Entry</b-link>
+              <b-link to="/booking">Booking</b-link>
             </li>
             <li>
-              <b-link to="/harvest/transplant/list">Harvest List</b-link>
-            </li>
-            <li>
-              <b-link to="/cultivar/list">Cultivar List</b-link>
+              <b-link to="/dashboard">Dashboard</b-link>
             </li>
           </ul>
         </div>
@@ -35,7 +32,7 @@
         </div>
       </div>
       <hr />
-      <p class="mb-2">designed and built by cyy.</p>
+      <!-- <p class="mb-2">designed and built by cyy.</p> -->
     </div>
   </footer>
 </template>

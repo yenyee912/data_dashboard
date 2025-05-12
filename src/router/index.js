@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 
 import LandingPage from '../views/welcome/DashboardView.vue'
 import HomePage from '../views/welcome/HomePage.vue'
-import AboutPage from '../views/welcome/AboutUs.vue'
 import NotFound from '../views/PageNotFound.vue'
 
 // user
@@ -14,6 +13,7 @@ import ResetPass from '../views/user/UserReset.vue'
 import ForgotPass from '../views/user/UserForgotPass.vue'
 
 // // harvest
+import InventoryChart from '../views/harvest/InventoryChart.vue'
 // import TransplantRecordTable from '../views/Harvest/TransplantRecordTable.vue'
 // import HarvestSchedule from '../views/Harvest/HarvestSchedule.vue'
 // import CropOfTheDay from '../views/Harvest/CropOfTheDay.vue'
@@ -66,14 +66,6 @@ const routes = [
     }
   },
   {
-    path: '/about',
-    name: 'AboutPage',
-    component: AboutPage,
-    meta: {
-      public: true
-    }
-  },
-  {
     path: '/home',
     name: 'HomePage',
     component: HomePage,
@@ -122,6 +114,16 @@ const routes = [
     meta: {
       public: true
     }
+  },
+  {
+    path: '/inv-chart',
+    name: 'InventoryChart',
+    component: InventoryChart,
+    meta: {
+      // requiresAuth: true
+      public: true
+    }
+
   },
 
   // // harvest  
@@ -406,10 +408,15 @@ const routes = [
   //   }
   // },
 
+  // not to expose the invalid links in address bar, just show /404 instead
   {
     path: '*',
+    redirect: '/404'
+  },
+  {
+    path: '/404',
     component: NotFound
-  }
+  },
 
 ]
 
@@ -418,8 +425,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
-
-const whitelist = ['/login', '/about', '/register']; // paths that don't need auth
 
 router.beforeEach((to, from, next) => {
   const loggedIn = localStorage.getItem('user');
