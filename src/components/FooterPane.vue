@@ -35,12 +35,10 @@
         </div>
       </div>
       <hr />
-      <p class="mb-2">Designed and built.</p>
-      <p>Currently v3 Code by ME</p>
+      <p class="mb-2">designed and built by cyy.</p>
     </div>
   </footer>
 </template>
 
 <script>
-export default {}
 </script>

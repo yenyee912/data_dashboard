@@ -6,7 +6,9 @@
         data here.</h3>
       <p><a href="https://google.com">Click here for production site</a></p>
     </div> -->
-    <router-view />
+    <main class="flex-fill">
+      <router-view />
+    </main>
     <footer-pane></footer-pane>
   </div>
 </template>

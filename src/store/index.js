@@ -12,9 +12,17 @@ export default new Vuex.Store({
   mutations: {
     SET_USER_DATA(state, userData) {
       state.user = userData
-      localStorage.setItem('user', JSON.stringify(userData)) 
+      localStorage.setItem('user', JSON.stringify(userData))
       localStorage.setItem('username', userData.user.name) // for easier fetch, no need dig in user obj
       axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`
+    },
+    DEV_LOGIN(state) { // main.js can call
+      const devUser = {
+        user: { name: 'DevUser' },
+        token: 'dev-token'
+      };
+      state.user = devUser;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${devUser.token}`;
     },
     LOGOUT(state) {
       state.user = null
