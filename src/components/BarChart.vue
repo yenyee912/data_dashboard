@@ -1,6 +1,6 @@
 <template>
   <div ref="barChart" class="chart-container">
-    <p style="color:red">from child</p>
+    <!-- <p style="color:red">from child</p> -->
   </div>
 </template>
 
@@ -9,25 +9,11 @@ import * as d3 from 'd3'
 
 export default {
   name: 'BarChart',
-  data() {
-    return {
-      svg: null,
-      x: null,
-      y: null,
-      width: 500,
-      height: 300,
-      margin: { top: 20, right: 30, bottom: 40, left: 40 },
-      tooltip: null,
-    }
-  },
-
   props: {
     inputData: {
       type: Array,
       required: true
     }
-
-
   },
   mounted() {
     if (this.inputData && this.inputData.length) {
@@ -44,29 +30,44 @@ export default {
           this.drawChart()
         }
       },
-      // immediate: true,
+      immediate: true,
       deep: true
+    }
+  },
+
+  data() {
+    return {
+      svg: null,
+      x: null,
+      y: null,
+      width: 500,
+      height: 300,
+      margin: { top: 20, right: 30, bottom: 40, left: 40 },
+      tooltip: null,
     }
   },
 
   methods: {
     drawChart() {
-      console.log('inputData from drawchart:', this.inputData)
+      // console.log('inputData from drawchart:', this.inputData)
 
       const { margin, width, height } = this;
-      d3.select(this.$refs.barChart).selectAll('*').remove();  // Remove previous chart if any
 
+      // Remove previous chart if any, better keep it alive 
+      // (WILL ALSO REMOVE OTHER/ALL HTML)
+      d3.select(this.$refs.barChart).selectAll('*').remove();
 
+      // Selects all < svg > elements inside the barChart container(even though there may be none at first).
       this.svg = d3.select(this.$refs.barChart).selectAll('svg')
-        .data([0])
+        .data([0]) // Binds a dummy array [0] to the selection. This is a trick to force exactly one SVG to be created if none exists.
         .enter()
         .append('svg')
-        .attr('width', width + margin.left + margin.right)
+        .attr('width', width + margin.left + margin.right) // if padding, then have to add padding
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`)
 
-      this.x = d3.scaleBand().range([0, width]).padding(0.2)
+      this.x = d3.scaleBand().range([0, width]).padding(0.4)
       this.y = d3.scaleLinear().range([height, 0])
 
       this.svg.append('g')
@@ -78,6 +79,7 @@ export default {
 
       this.tooltip = d3.select(this.$refs.barChart)  // Use this.$refs.barChart instead of this.$refs.chart
         .append('div')
+        .attr('class', 'tooltip')
         .style('position', 'absolute')
         .style('background', '#fff')
         .style('border', '1px solid #ccc')
@@ -91,7 +93,7 @@ export default {
     },
 
     updateChart() {
-      console.log("from update chart", this.inputData[0])
+      // console.log("from update chart", this.inputData[0].label)
       if (!this.x || !this.y || !this.svg || !this.inputData.length) return;  // Check data length
 
       const data = this.inputData;
@@ -133,14 +135,13 @@ export default {
       // Enter
       bars.enter()
         .append('rect')
-        .attr('class', 'bar')
+        .attr('class', 'bar') // can bind with scss
         .attr('x', d => x(d.label))
         .attr('y', y(0))
         .attr('width', x.bandwidth())
         .attr('height', 0)
-        .attr('fill', '#2bb573')
         .on('mouseover', (event, d) => {
-          d3.select(event.currentTarget).attr('fill', '#199d5d')
+          // d3.select(event.currentTarget).attr('fill', '#199d5d')
           this.tooltip.transition().duration(100).style('opacity', 0.9)
           this.tooltip.html(`<strong>${d.label}</strong><br/>Production: ${d.value}`)
         })
@@ -163,18 +164,21 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+/* easiet way is  */
 .chart-container {
-  margin: 30px auto;
-  max-width: 600px;
+  margin: 30vh auto;
+  max-width: 600vh;
 }
 
-svg {
-  width: 100%;
-  height: auto;
-}
-
-.bar {
-  fill: steelblue;
+.tooltip {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0;
+  color: black;
 }
 </style>
