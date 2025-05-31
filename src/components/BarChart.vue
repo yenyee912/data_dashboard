@@ -15,19 +15,18 @@ export default {
       required: true
     }
   },
-  mounted() {
-    if (this.inputData && this.inputData.length) {
-      this.drawChart();
-    } else {
-      console.log('No data to render');
-    }
-  },
 
   watch: {
     inputData: {
       handler() {
         if (this.inputData.length) {
-          this.drawChart()
+          if (!this.svg) {
+            this.drawChart();
+          }
+
+          else {
+            this.updateChart();
+          }
         }
       },
       immediate: true,
@@ -53,8 +52,8 @@ export default {
 
       const { margin, width, height } = this;
 
-      // Remove previous chart if any, better keep it alive 
-      // (WILL ALSO REMOVE OTHER/ALL HTML)
+      // Remove previous chart if any, better keep this line alive 
+      // (WILL ALSO CLEAN UP THE CANVAS, REMOVE ALL HTML TAG)
       d3.select(this.$refs.barChart).selectAll('*').remove();
 
       // Selects all < svg > elements inside the barChart container(even though there may be none at first).
@@ -93,7 +92,13 @@ export default {
     },
 
     updateChart() {
-      // console.log("from update chart", this.inputData[0].label)
+      // Responsible for updating the content inside the existing SVG structure:
+      // - Rebinding data to bars
+      // - Updating bar heights, positions, or colours
+      // - Updating scales and axes
+      // - Transitioning between states if needed
+      // -This method is triggered whenever inputData changes:
+
       if (!this.x || !this.y || !this.svg || !this.inputData.length) return;  // Check data length
 
       const data = this.inputData;
@@ -154,6 +159,7 @@ export default {
           this.tooltip.transition().duration(200).style('opacity', 0)
         })
         .on('click', (event, d) => {
+          console.log("rawraw ", d.raw)
           this.$emit('bar-click', d.raw)
         })
         .transition().duration(300)

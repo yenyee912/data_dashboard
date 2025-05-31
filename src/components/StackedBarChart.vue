@@ -50,11 +50,12 @@ export default {
   },
   methods: {
     drawChart() {
+      // this for legend, no need touch
       const keys = Array.from(
         new Set(
           this.inputData.flatMap(d =>
             Object.keys(d)
-              .filter(k => k !== 'label' && k != 'production') // this might need to avoid, do data cleaning
+              .filter(k => k !== 'label' && k !== 'production')
               .map(k => k.trim()) // 🧼 remove leading/trailing spaces
           )
         )
