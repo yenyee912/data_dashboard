@@ -19,7 +19,7 @@ export default {
   watch: {
     inputData: {
       handler() {
-        if (this.inputData.length) {
+        if (this.inputData.length > 0) {
           if (!this.svg) {
             this.drawChart();
           }
@@ -76,7 +76,7 @@ export default {
       this.svg.append('g')
         .attr('class', 'y-axis')
 
-      this.tooltip = d3.select(this.$refs.barChart)  // Use this.$refs.barChart instead of this.$refs.chart
+      this.tooltip = d3.select('body')  // Use this.$refs.barChart instead of this.$refs.chart
         .append('div')
         .attr('class', 'tooltip')
         .style('position', 'absolute')
@@ -146,17 +146,17 @@ export default {
         .attr('width', x.bandwidth())
         .attr('height', 0)
         .on('mouseover', (event, d) => {
-          // d3.select(event.currentTarget).attr('fill', '#199d5d')
-          this.tooltip.transition().duration(100).style('opacity', 0.9)
-          this.tooltip.html(`<strong>${d.label}</strong><br/>Production: ${d.value}`)
+          d3.select(event.currentTarget).attr('fill', '#199d5d');
+          this.tooltip.transition().duration(100).style('opacity', 0.9);
+          this.tooltip.html(`<strong>${d.label}</strong><br/>Production: ${d.value}`);
         })
         .on('mousemove', (event) => {
           this.tooltip.style('left', `${event.pageX + 10}px`)
-            .style('top', `${event.pageY - 28}px`)
+            .style('top', `${event.pageY - 28}px`);
         })
         .on('mouseleave', (event) => {
-          d3.select(event.currentTarget).attr('fill', '#2bb573')
-          this.tooltip.transition().duration(200).style('opacity', 0)
+          d3.select(event.currentTarget).attr('fill', '#2bb573');
+          this.tooltip.transition().duration(200).style('opacity', 0);
         })
         .on('click', (event, d) => {
           console.log("rawraw ", d.raw)
@@ -170,7 +170,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 /* easiet way is  */
 .chart-container {
   margin: 30vh auto;
@@ -178,13 +178,15 @@ export default {
 }
 
 .tooltip {
-  position: absolute;
-  background: #fff;
+  background: white;
   border: 1px solid #ccc;
   padding: 6px 10px;
   font-size: 14px;
   pointer-events: none;
+  position: absolute;
   opacity: 0;
-  color: black;
+  z-index: 1000;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 </style>

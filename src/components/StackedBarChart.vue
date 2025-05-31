@@ -25,7 +25,7 @@ export default {
       // 1. Not cleared on refresh.
       // 2. Initialised correctly in data() or props.
       handler(newData) {
-        if (newData && newData.length) {
+        if (newData.length > 0) {
           this.drawChart()
         }
 
