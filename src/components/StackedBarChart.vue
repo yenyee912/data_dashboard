@@ -54,7 +54,7 @@ export default {
         new Set(
           this.inputData.flatMap(d =>
             Object.keys(d)
-              .filter(k => k !== 'label')
+              .filter(k => k !== 'label' && k != 'production') // this might need to avoid, do data cleaning
               .map(k => k.trim()) // 🧼 remove leading/trailing spaces
           )
         )
