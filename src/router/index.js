@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import LandingPage from '../views/welcome/DashboardView.vue'
-import HomePage from '../views/welcome/HomePage.vue'
+import DemoPage from '../views/DemoPage.vue'
+
+import Dashboard from '../views/welcome/DashboardView.vue'
+import LandingPage from '../views/welcome/LandingPage.vue'
 import NotFound from '../views/PageNotFound.vue'
 
 // user
@@ -14,6 +16,7 @@ import ForgotPass from '../views/user/UserForgotPass.vue'
 
 // // harvest
 import InventoryChart from '../views/harvest/InventoryChart.vue'
+
 // import TransplantRecordTable from '../views/Harvest/TransplantRecordTable.vue'
 // import HarvestSchedule from '../views/Harvest/HarvestSchedule.vue'
 // import CropOfTheDay from '../views/Harvest/CropOfTheDay.vue'
@@ -34,19 +37,23 @@ import InventoryChart from '../views/harvest/InventoryChart.vue'
 // import DOUpload from '../views/Booking/DOUpload.vue'
 // import FulfillBooking from '../views/Booking/FulfillBooking.vue'
 
-// // seedInventory
+// seedInventory
+import ScanPage from '../views/seedInventory/ScanPage.vue'
+
 // import SeedList from '../views/seedInventory/SeedList'
 // import EditSeed from '../views/seedInventory/EditSeed'
 // import AddSeed from '../views/seedInventory/AddSeed'
-// import NewSeedEntry from '../views/seedInventory/NewSeedEntry'
+
+// import NewSeedInvEntry from '../views/seedInventory/NewSeedEntry'
 // import EditedSeedEntry from '../views/seedInventory/EditedSeedEntry'
 // import HQSeedInv from '../views/seedInventory/HQSeedInv'
 // import FarmSeedInv from '../views/seedInventory/FarmSeedInv'
 // import ScanHistory from '../views/seedInventory/ScanHistory'
-// import ManualEntry from '../views/seedInventory/ManualEntry'
+
+// import ManualEntry from '../views/seedInventory/ManualEntry' // form
 // import HQScan from '../views/seedInventory/HQScan'
 // import FarmScan from '../views/seedInventory/FarmScan'
-// import NewScanEntry from '../views/seedInventory/NewScanEntry'
+// import NewScanEntry from '../views/seedInventory/NewScanEntry' // receipt
 
 // // location
 // import LocationList from '../views/Location/LocationList.vue'
@@ -58,17 +65,26 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/demo',
+    name: 'DemoPage',
+    component: DemoPage,
+    meta: {
+      public: true
+    }
+
+  },
+  {
     path: '/dashboard',
-    name: 'LandingPage',
-    component: LandingPage,
+    name: 'Dashboard',
+    component: Dashboard,
     meta: {
       requiresAuth: true
     }
   },
   {
-    path: '/home',
-    name: 'HomePage',
-    component: HomePage,
+    path: '/',
+    name: 'LandingPage',
+    component: LandingPage,
     meta: {
       public: true
     }
@@ -120,8 +136,8 @@ const routes = [
     name: 'InventoryChart',
     component: InventoryChart,
     meta: {
-      // requiresAuth: true
-      public: true
+      requiresAuth: true
+      // public: true
     }
 
   },
@@ -261,7 +277,16 @@ const routes = [
   //     requiresAuth: true
   //   }
   // },
-  // //----------Inventory-------------------
+  //----------Inventory-------------------
+  {
+    path: '/scan',
+    name: 'ScanPage',
+    component: ScanPage,
+    props: true,
+    meta: {
+      requiresAuth: true
+    }
+  },
   // {
   //   path: '/seed/list',
   //   name: 'SeedList',
@@ -300,8 +325,8 @@ const routes = [
 
   // {
   //   path: '/seed/new/entry',
-  //   name: 'NewSeedEntry',
-  //   component: NewSeedEntry,
+  //   name: 'NewSeedInvEntry',
+  //   component: NewSeedInvEntry,
   //   props: true,
   //   meta: {
   //     requiresAuth: true
@@ -338,15 +363,7 @@ const routes = [
   //   }
   // },
 
-  // {
-  //   path: '/seed/inventory/hq/list',
-  //   name: 'HQSeedInv',
-  //   component: HQSeedInv,
-  //   props: true,
-  //   meta: {
-  //     requiresAuth: true
-  //   }
-  // },
+
 
   // {
   //   path: '/seed/inventory/farm/list',

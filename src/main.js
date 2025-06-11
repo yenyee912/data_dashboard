@@ -10,7 +10,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 // Plugins
 import Vuelidate from 'vuelidate'
-// import VueQrcodeReader from 'vue-qrcode-reader'
+import VueQrcodeReader from 'vue-qrcode-reader'
 
 // Global Styles
 import '../main.scss'
@@ -26,7 +26,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(JumbotronPlugin)
 Vue.use(Vuelidate)
-// Vue.use(VueQrcodeReader)
+Vue.use(VueQrcodeReader)
+
 
 if (process.env.NODE_ENV === 'development') {
   const dummyUser = {
