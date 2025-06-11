@@ -29,14 +29,9 @@ Vue.use(Vuelidate)
 Vue.use(VueQrcodeReader)
 
 
-if (process.env.NODE_ENV === 'development') {
-  const dummyUser = {
-    user: {
-      name: 'DevUser'
-    },
-    token: 'dummy-token-123'
-  };
-  store.commit('SET_USER_DATA', dummyUser);
+if (process.env.NODE_ENV == 'development') {
+  console.log("ok commit dev login")
+  store.commit('DEV_LOGIN');
 }
 else { // Restore user session from localStorage if exists
   const userString = localStorage.getItem('user');
@@ -71,6 +66,7 @@ new Vue({
   store,
   created() {
     const user = localStorage.getItem('user')
+    console.log("see if created", user)
     if (user) {
       store.commit('SET_USER_DATA', JSON.parse(user))
     }

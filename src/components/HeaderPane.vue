@@ -19,15 +19,15 @@
       <b-collapse id="navbar-toggle-collapse" is-nav>
         <!-- ml-auto: align right-->
         <b-navbar-nav class="ml-auto" v-if="!loggedIn">
-          <b-nav-item to="/homepage">Home</b-nav-item>
-          <b-nav-item textto="/login">Login</b-nav-item>
+          <b-nav-item to="/">Home</b-nav-item>
+          <b-nav-item to="/login">Login</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto" v-if="loggedIn">
           <b-nav-item to="/dashboard">Dashboard</b-nav-item>
-          <b-nav-item to="/booking">Booking</b-nav-item>
+          <!-- <b-nav-item to="/booking">Booking</b-nav-item> -->
           <b-nav-item-dropdown :text="showUsername">
-            <b-dropdown-item to="/profile">Profile</b-dropdown-item>
+            <!-- <b-dropdown-item to="/profile">Profile</b-dropdown-item> -->
             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -42,14 +42,15 @@ import { authComputed } from '../store/helpers.js'
 export default {
   computed: {
     ...authComputed,
-    showUsername: function () {
-      return localStorage.username
+    showUsername() {
+      // return localStorage.username
+      return this.$store.state.user.user.name
     }
   },
   methods: {
     logout() {
       this.$store.dispatch('logout').then(() => {
-        this.$router.push({ name: 'Login' })
+        this.$router.push({ name: 'LoginPage' })
       })
     }
   }

@@ -3,7 +3,7 @@
     <b-row class="mb-4">
       <b-col>
         <h1 class="hello-landing">
-          Hello, <b class="text-success">{{ usernameFunction }}!</b>
+          Hello, <b class="text-success">{{ showUsername }}!</b>
         </h1>
       </b-col>
     </b-row>
@@ -45,7 +45,7 @@
         </b-card>
       </b-col>
 
-      <b-col cols="12" md="3" class="mb-3">
+      <!-- <b-col cols="12" md="3" class="mb-3">
         <b-card class="text-center card-landing" body-class="pb-1">
           <b-link to="/404">
             <b-card-img src="/assets/placeholder.png" class="w-50 mx-auto"></b-card-img>
@@ -53,7 +53,7 @@
           <b-card-title class="landing-sub">ENTRY LIST</b-card-title>
           <b-card-text class="caption-2">View data entry</b-card-text>
         </b-card>
-      </b-col>
+      </b-col> -->
 
       <b-col cols="12" md="3" class="mb-3">
         <b-card class="text-center card-landing" body-class="pb-1">
@@ -74,17 +74,10 @@ import { authComputed } from '../../store/helpers.js'
 export default {
   computed: {
     ...authComputed,
-    usernameFunction() {
-      return localStorage.username;
+    showUsername() {
+      return this.$store.state.user.user.name
     }
   },
-  methods: {
-    logout() {
-      this.$store.dispatch('logout').then(() => {
-        this.$router.push({ name: 'Login' });
-      });
-    }
-  }
 };
 </script>
 

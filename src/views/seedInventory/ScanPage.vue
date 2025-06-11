@@ -1,158 +1,121 @@
 <template>
-  <b-overlay :show="busy == true" class="container">
-
-    <h1 class="subheading-font">New Scan Entry</h1>
-    <b-form class="details-font">
-      <p class="date">Date/ Time</p>
-      <p class="date-details">{{ today() }}</p>
-      <p class="staff">Staff Email</p>
-      <p class="staff-details">{{ scan.staffEmail }}</p>
-      <p class="staff">Staff Name</p>
-      <p class="staff-details">{{ scan.staffName }}</p>
-      <p class="staff">Scan Location</p>
-      <p class="staff-details">HQ</p>
-
-      <b-form-group class="location" label="Action*">
-        <b-form-select class="col-lg-4" style="border-radius: 20px; padding-left: 15px; width: 300px;"
-          :options="actionOptions" v-model="scan.action" size="md"></b-form-select>
-        <p v-if="$v.scan.action.$error" style="color:red">
-          Scan action required.
-        </p>
-      </b-form-group>
-
-      <b-form-group class="location" label="Destination*" v-if="scan.action == 2">
-        <b-form-select class="col-lg-4 drop-style" style="border-radius: 20px; padding-left: 15px; width: 300px;"
-          v-model="scan.scanDestination" :options="locationOptions" size="md"></b-form-select>
-        <p v-if="$v.scan.scanDestination.$error || destinationAlert != ''" style="color:red">
-          Scan destination required.
-        </p>
-      </b-form-group>
-
-      <hr style="margin-top: 50px;">
-
-      <!-- qr code scanner -->
-      <h1 class="subheading-font">Scanner</h1>
-      <p class="details-font">Scan the QR code on seed packet.</p>
-      <div sm=6 md=4>
-        <b-alert variant="success" class="green-alert" :show="green.dismissCountDown"
-          @dismissed="green.dismissCountDown = 0" @dismiss-count-down="greenCountDownChanged">{{ green.alert
-          }}</b-alert>
-      </div>
-
-      <div sm=6 md=4>
-        <b-alert variant="danger" class="red-alert" :show="red.dismissCountDown" @dismissed="red.dismissCountDown = 0"
-          @dismiss-count-down="redCountDownChanged">{{ red.alert }}</b-alert>
-      </div>
-
-      <div sm=6 md=4>
-        <b-alert variant="warning" class="yellow-alert" :show="yellow.dismissCountDown"
-          @dismissed="yellow.dismissCountDown = 0" @dismiss-count-down="yellowCountDownChanged">{{ yellow.alert
-          }}</b-alert>
-      </div>
-
-      <!--scanner on-->
-      <div class="on-scanner" style="height: 300px;" v-if="scannerAppear">
-
-        <qrcode-stream @init="loadCamera" @decode="decodeQR" :track="true" :paused="true">
-          <div class="loading-indicator" v-if="loading">
-            <p>Scanner Loading...</p>
-          </div>
-        </qrcode-stream>
-      </div>
-
-      <!--scanner off-->
-      <div style="text-align: center; margin-top: 50px;">
-        <span v-if="!scannerAppear">
-          <div class="off-scanner" style="height: 300px;">
-            <p class="off-text">Scanner is</p>
-            <p class="off-text2">OFF</p>
-          </div>
-          <b-btn size="md" class="btn-success button-scan" @click.prevent="scannerAppear = !scannerAppear">ON</b-btn>
-        </span>
-        <span v-else>
-          <b-btn size="md" class="btn-danger button-scan"
-            @click.prevent="scannerAppear = !scannerAppear">OFF</b-btn></span>
-      </div>
-
-      <hr style="margin-top: 50px;">
-
-      <h3 class="subheading-font">Scan List</h3>
-      <div v-if="scan.scanList.length">
-        <div v-for="(x, index) in $v.scan.scanList.$each.$iter" :key="x.seedId.$model" :index="index">
-
-          <b-card class="item-card">
-            <b-row class="mb-3 itemBg">
-
-              <b-col cols="12" lg="12" style="text-align: right;">
-                <b-icon class="delete" variant=danger icon="trash-fill" @click.prevent="removeRow(index)"></b-icon>
-              </b-col>
-
-              <b-col cols=12 lg="6" class="details-font">
-                <b-form-group class="seed" label="Seed">
-                  <b-form-textarea style="border-radius: 20px; padding-left: 15px; width: 290px;" :options="seedOptions"
-                    readonly v-model="x.seedRef.$model" size="md"></b-form-textarea></b-form-group>
-              </b-col>
-
-              <b-col lg="12" cols="12">
-                <b-form-group class="quantity" label="Quantity*">
-                  <b-form-input type="number"
-                    style="border-radius: 20px; padding-left: 15px; width: 290px; margin-bottom: 10px;"
-                    v-model="x.quantity.$model" size="md" min="1"></b-form-input>
-                </b-form-group>
-                <p v-if="x.quantity.$error" style="color:red">
-                  Quantity required.
-                </p>
-                <p v-if="!x.quantity.minValue" style="color:red">
-                  Minimum scan quantity is 1 packtet.
-                </p>
-              </b-col>
-
-              <b-col lg="12" cols="12" v-show="scan.action == 1">
-                <b-form-group class="quantity" label="Expiry Year*">
-                  <b-form-select type="number"
-                    style="border-radius: 20px; padding-left: 15px; width: 290px; margin-bottom: 10px;"
-                    v-model="x.expYear.$model" size="md" :options="expYearOptions"></b-form-select>
-                </b-form-group>
-                <p v-if="x.expYear.$error" style="color:red">
-                  Expiry year required.
-                </p>
-              </b-col>
-
-            </b-row>
-
-          </b-card>
+  <div class="scan-page">
+    <!-- <b-overlay> -->
+    <div class="left-pane">
+      <h1 class="heading-font">New Scan Entry</h1>
+      <b-form class="details-font">
+        <div class="text-row">
+          <p class="details-font">Date Time</p>
+          <p class="details-font-value">{{ currentTime }}</p>
+        </div>
+        <div class="text-row">
+          <p class="details-font">Staff Name</p>
+          <p class="details-font-value">{{ scan.staffName }} ({{ scan.staffId }})</p>
+        </div>
+        <div class="text-row">
+          <p class="details-font">Scan Location</p>
+          <p class="details-font-value">HQ</p>
         </div>
 
-        <div style="text-align: center;">
-          <b-button variant="success" class="xs mt-2 button-scan" @click.prevent="checkInput">SUBMIT</b-button>
+        <b-form-group class="location" label="Action*">
+          <b-form-select class="col-lg-4" style="border-radius: 20px; padding-left: 15px; width: 300px;"
+            :options="actionOptions" v-model="scan.action" size="md"></b-form-select>
+          <p v-if="$v.scan.action.$error" style="color:red">
+            Scan action required.
+          </p>
+        </b-form-group>
+
+        <b-form-group class="location" label="Destination*" v-if="scan.action == 2">
+          <b-form-select class="col-lg-4 drop-style" style="border-radius: 20px; padding-left: 15px; width: 300px;"
+            v-model="scan.scanDestination" :options="locationOptions" size="md"></b-form-select>
+          <p v-if="$v.scan.scanDestination.$error || destinationAlert != ''" style="color:red">
+            Scan destination required.
+          </p>
+        </b-form-group>
+
+        <hr style="margin-top: 50px;">
+
+        <!-- scanner alert -->
+        <h1 class="heading-font">Scanner</h1>
+        <p class="details-font">Scan the QR code on seed packet.</p>
+        <div sm=6 md=4>
+          <b-alert variant="success" class="green-alert" :show="green.dismissCountDown"
+            @dismissed="green.dismissCountDown = 0" @dismiss-count-down="greenCountDownChanged">{{ green.alert
+            }}</b-alert>
+          <b-alert variant="danger" class="red-alert" :show="red.dismissCountDown" @dismissed="red.dismissCountDown = 0"
+            @dismiss-count-down="redCountDownChanged">{{ red.alert }}</b-alert>
+          <b-alert variant="warning" class="yellow-alert" :show="yellow.dismissCountDown"
+            @dismissed="yellow.dismissCountDown = 0" @dismiss-count-down="yellowCountDownChanged">{{ yellow.alert
+            }}</b-alert>
         </div>
 
-      </div>
+        <!--qr code scanner-->
+        <div class="on-scanner mt-3" v-if="scannerAppear">
+          <scanner-box @scan-item="handleScanData"></scanner-box>
 
-      <div v-else class="mb-4">
-        No item scanned. Turn on scanner to start.
-      </div>
+          <!-- <qrcode-stream @init="loadCamera" @decode="decodeQR" :track="true" :paused="true">
+            <div class="loading-indicator" v-if="loading">
+              <p>Scanner Loading...</p>
+            </div>
+            </qrcode-stream> -->
+        </div>
 
-      <b-alert variant="danger" class="red-alert m-2" dismissible :show="scanFailAlert != ''">
-        {{ scanFailAlert }}
-      </b-alert>
-    </b-form>
-  </b-overlay>
+        <!--scanner off-->
+        <div style="text-align: center; margin-top: 50px;">
+          <span v-if="!scannerAppear">
+            <div class="off-scanner text-row" style="height: 300px;">
+              <p>Scanner is</p>
+              <p>OFF</p>
+            </div>
+            <b-btn size="md" class="btn-success button-scan" @click.prevent="scannerAppear = !scannerAppear">ON</b-btn>
+          </span>
+          <span v-else>
+            <b-btn size="md" class="btn-danger button-scan"
+              @click.prevent="scannerAppear = !scannerAppear">OFF</b-btn></span>
+        </div>
+        <b-alert variant="danger" class="red-alert m-2" dismissible :show="scanFailAlert != ''">
+          {{ scanFailAlert }}
+        </b-alert>
+      </b-form>
+    </div>
+
+    <div class="right-pane">
+      <scan-item-list :item-scan-list="scan.scanList" @remove-item="removeRow"></scan-item-list>
+    </div>
+
+    <!-- </b-overlay> -->
+  </div>
 
 </template>
 
 <script>
 import axios from 'axios';
 import { required, minValue } from "vuelidate/lib/validators";
+import ScannerBox from "../../components/ScannerBox.vue"
+import ScanItemList from '@/components/ScanItemList.vue';
 
 export default {
+  components: {
+    ScannerBox,
+    ScanItemList
+
+  },
   data() {
     return {
+      nowTime: new Date(),
       busy: true,
-      locationOptions: [],
-      actionOptions: [],
-      scanFailAlert: '',
-      destinationAlert: '',
+      loading: '',
+      scannerAppear: false,
+
+      locationOptions: [
+        { value: 0, text: 'Please select a farm.' },
+        { value: 1, text: 'to Farm A' },
+        { value: 2, text: 'to Farm B' }
+      ],
+      actionOptions: [
+        { value: 1, text: 'to HQ Inventory' },
+        { value: 2, text: 'to Farm' },
+      ],
       expYearOptions: [
         { value: '', text: 'Please select expiry year.' },
         { value: 2021, text: "2021" },
@@ -162,15 +125,17 @@ export default {
       scan: {
         staffEmail: JSON.parse(localStorage.user).user.email,
         staffName: JSON.parse(localStorage.user).user.name,
+        staffId: JSON.parse(localStorage.user).user.id,
         scanLocation: 1,
         scanDestination: 0,
-        action: 0,
+        action: 1,
         scanList: [
-          // {seedId: "wellgrow-14-400", cultivarId:14, quantity: 2, seedRef:"WELLGROW SEEDS-Rocket(wellgrow-14-400)", expYear:0}, 
-          // {seedId: "wellgrow-24-120", cultivarId:24, quantity: 5, seedRef:"WELLGROW SEEDS-Red Mizuna(wellgrow-24-120)", expYear:''}, 
+          { seedId: "wellgrow-14-400", cultivarId: 14, quantity: 2, seedRef: "WELLGROW SEEDS-Rocket(wellgrow-14-400)", expYear: 0 },
+          { seedId: "wellgrow-24-120", cultivarId: 24, quantity: 5, seedRef: "WELLGROW SEEDS-Red Mizuna(wellgrow-24-120)", expYear: '' },
         ],
       },
-
+      scanFailAlert: '',
+      destinationAlert: '',
       red: {
         alert: '',
         dismissSecs: 3,
@@ -192,7 +157,6 @@ export default {
         showDismissibleAlert: false,
       },
 
-
       seedOptions: [],
       cultivarOptions: [],
 
@@ -201,9 +165,13 @@ export default {
           ideal: 'none'
         }
       },
-      scannerAppear: false,
+    }
 
-      loading: '',
+  },
+
+  computed: {
+    currentTime() {
+      return this.nowTime.toLocaleString();
     }
 
   },
@@ -230,22 +198,20 @@ export default {
   methods: {
     async callAPI() {
       this.busy = true
-      await this.today()
-      await this.getExpYear()
-      await this.getCultivar()
-      await this.getSeeds()
-      await this.getLocation()
-      await this.getAction()
+      // await this.today()
+      // await this.getExpYear()
+      // await this.getCultivar()
+      // await this.getSeeds()
+      // await this.getLocation()
+      // await this.getAction()
       this.busy = false
     },
 
-    // only for action==2!!!
-    // refactor needed
-    bindExpYear(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i].expYear = 1
-      }
+    handleScanData(x) {
+      console.log(x)
+
     },
+
 
     greenCountDownChanged(a) {
       this.green.dismissCountDown = a
@@ -358,7 +324,6 @@ export default {
     },
 
     decodeQR(decodedString) {
-
       let scannedItem = JSON.parse(decodedString)
       let exist = false;
       let valid = false;
@@ -450,6 +415,7 @@ export default {
     },
 
     removeRow(index) {
+      console.log(index)
       this.scan.scanList.splice(index, 1)
     },
 
@@ -472,82 +438,67 @@ export default {
 }
 </script>
 
-<style>
-.title-font {
-  font-family: 'Cooper Black', sans-serif;
-  font-weight: bold;
+<style scoped>
+.scan-page {
+  font-family: 'Nunito', sans-serif;
   color: #2bb573;
-  font-size: 40px;
-  margin-top: 30px;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
 }
 
-.subheading-font {
-  font-family: 'Nunito', sans-serif;
+.right-pane {
+  width: 30vh;
+  box-sizing: border-box;
+  overflow: scroll;
+  flex: 1;
+}
+
+.left-pane {
+  width: 70vh;
+  box-sizing: border-box;
+  flex: 1;
+  border-right: 1px solid;
+}
+
+.heading-font {
+  color: #2bb573;
+  /* must have as the subheading color will overwrite it */
   font-size: 28px;
   font-weight: 700;
-  color: #2bb573;
   margin-top: 40px;
 }
 
-.details-font {
-  font-family: 'Nunito', sans-serif;
+.details-font-value {
   font-size: 14px;
-  margin-top: -8px;
-  margin-left: 2px;
-  font-weight: 500;
+  /* margin-top: -8px;
+  margin-left: 2px; */
   /* text-align: center;
   line-height: 24px; */
   color: #28273d;
+  font-weight: bold;
 }
 
-.details-font .date {
-  margin-top: 20px;
+.details-font {
+  /* margin-top: 20px; */
   color: gray;
   letter-spacing: 1.2px;
+  font-weight: 500;
 }
 
-.details-font .date-details {
-  font-size: 16px;
-  margin-top: -16px;
-  font-weight: 600;
+.text-row {
+  display: flex;
+  justify-content: center;
+  /* center horizontally */
+  align-items: center;
+  /* optional: center vertically */
+  gap: 10px;
+  /* optional spacing between p tags */
 }
 
-.details-font .staff {
-  margin-top: -5px;
-  color: gray;
-  letter-spacing: 1.2px;
-}
-
-.details-font .staff-details {
-  font-size: 16px;
-  margin-top: -16px;
-  font-weight: 600;
-}
-
-.details-font .status {
-  margin-top: 30px;
-  color: gray;
-  letter-spacing: 1px;
-}
-
-.details-font .location {
-  margin-top: 10px;
-  color: gray;
-  letter-spacing: 1px;
-}
-
-.details-font .seed {
-  margin-top: 0px;
-  color: gray;
-  letter-spacing: 1px;
-}
-
-.details-font .quantity {
-  margin-top: 0px;
-  margin-bottom: -5px;
-  color: gray;
-  letter-spacing: 1px;
-}
 
 .loading-indicator {
   font-family: 'Nunito', sans-serif;
@@ -579,12 +530,13 @@ export default {
 }
 
 .on-scanner {
-  margin-top: 10px;
+  /* margin-top: 10px;
   margin-bottom: -10px;
   max-height: 480px;
-  max-width: 480px;
+  max-width: 480px; */
   width: 100%;
   height: 100%;
+  justify-content: center;
 }
 
 .off-scanner {
@@ -599,25 +551,6 @@ export default {
   background-color: black;
 }
 
-.off-text {
-  font-family: 'Nunito', sans-serif;
-  padding-top: 120px;
-  font-size: 14px;
-  color: white;
-  text-align: center;
-  letter-spacing: 1px;
-}
-
-.off-text2 {
-  font-family: 'Nunito', sans-serif;
-  margin-top: -20px;
-  margin-left: 3px;
-  font-weight: bolder;
-  letter-spacing: 2px;
-  font-size: 26px;
-  color: white;
-  text-align: center;
-}
 
 .button-scan {
   font-family: 'Nunito', sans-serif;
@@ -629,43 +562,4 @@ export default {
   max-width: 120px;
   width: 100%;
 }
-
-/* .btn-block {
-  max-width: 250px;
-  width: 100%;
-  text-align: center!important;
-} */
-
-.item-card {
-  max-width: 350px;
-  margin-top: 20px;
-  margin-bottom: 18px;
-  padding-left: 5px;
-  padding-right: 5px;
-  /* display: flex; */
-  border-color: transparent !important;
-  border-radius: 10px !important;
-  box-shadow: 0.01px 1.5px 12px rgb(0, 0, 0, 0.12) !important;
-}
-
-/* .entry-form {
-  border-radius: 20px; padding-left: 15px; width: 300px;
-}
-
-.card-form {
-  border-radius: 20px; 
-  padding-left: 15px; 
-  width: 290px;
-} */
-
-.delete {
-  width: 20px;
-  height: 20px;
-}
-
-/* .itemBg{
-  background-color:#7fd3a1;
-  padding-top:20px;
-  padding-bottom: 20px; 
-} */
 </style>

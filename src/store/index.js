@@ -18,16 +18,29 @@ export default new Vuex.Store({
     },
     DEV_LOGIN(state) { // main.js can call
       const devUser = {
-        user: { name: 'DevUser' },
-        token: 'dev-token'
+        user: {
+          name: 'John Doe',
+          email: 'dev@gmail.com',
+          password: 'dev123',
+          id: 'staff-123456'
+        },
+        token: 'dummy-token-123' // should have get from the axios
       };
       state.user = devUser;
+      state.username = devUser.user.name
+      state.userId = devUser.user.id
+      localStorage.setItem('user', JSON.stringify(state.user))
+      localStorage.setItem('username', state.username)
+      localStorage.setItem('userId', state.userId)
       axios.defaults.headers.common['Authorization'] = `Bearer ${devUser.token}`;
+      // console.log("dev login from store")
+
     },
     LOGOUT(state) {
       state.user = null
       localStorage.removeItem('user')
       localStorage.removeItem('username')
+      console.log(localStorage)
       delete axios.defaults.headers.common['Authorization']
     },
     IS_NEW_USER(state, isNewUser) {
@@ -43,15 +56,24 @@ export default new Vuex.Store({
           }
         })
     },
+    // login({ commit }, credentials) {
+    //   return axios.post(`${process.env.VUE_APP_ROOT_API}/user/login`, credentials)
+    //     .then(({ data }) => {
+    //       commit('SET_USER_DATA', data)
+    //     })
+
+    // },
     login({ commit }, credentials) {
-      return axios.post(`${process.env.VUE_APP_ROOT_API}/user/login`, credentials)
-        .then(({ data }) => {
-          commit('SET_USER_DATA', data)
-        })
+      if (credentials.email === 'dev@gmail.com' && credentials.password === 'dev123') {
+        commit('DEV_LOGIN', credentials)
+        return Promise.resolve() // to keep it consistent
+      } else {
+        return Promise.reject({ response: { data: { error: 'Invalid credentials' } } })
+      }
     },
     logout({ commit }) {
       commit('LOGOUT')
-      return axios.get(`${process.env.VUE_APP_ROOT_API}/user/logout`)
+      // return axios.get(`${process.env.VUE_APP_ROOT_API}/user/logout`)
     }
   },
   getters: {
